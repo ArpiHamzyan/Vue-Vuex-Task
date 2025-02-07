@@ -38,9 +38,9 @@ import { computed } from 'vue'
 
 const store = useStore()
 
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 
-const products = computed(() => store.state.products.list)
+const products = computed(() => store.getters['products/getProducts'])
 
 const deleteProduct = (id) => {
   store.dispatch('products/delete', id)
@@ -102,5 +102,6 @@ li {
   background: #54219b;
   color: white;
   padding: 10px;
+  cursor: pointer;
 }
 </style>

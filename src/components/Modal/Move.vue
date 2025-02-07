@@ -1,8 +1,11 @@
 <template>
-  <div class="modal">
+  <div
+    :style="{ top: `${props.y}px`, left: `${props.x - 10}px`, position: 'absolute' }"
+    class="modal"
+  >
     <ul>
       <li v-for="card in props.cards" :key="card">
-        <div @click="changeStatus(card, props.taskId)" class="button">{{ card }}</div>
+        <div @click="sendTask(card)" class="button">{{ card }}</div>
       </li>
     </ul>
   </div>
@@ -11,13 +14,13 @@
 <script setup>
 import { useStore } from 'vuex'
 
-const props = defineProps(['taskId', 'cards'])
+const props = defineProps(['taskId', 'fromKey', 'cards', 'x', 'y'])
 const emit = defineEmits(['close'])
 
 const store = useStore()
 
-const changeStatus = (card, taskId) => {
-  store.commit('todos/moveTodo', { status: card, taskId })
+const sendTask = (toKey) => {
+  store.commit('todos/moveTodo', { fromKey: props.fromKey, toKey, taskId: props.taskId })
   emit('close')
 }
 </script>
@@ -29,7 +32,7 @@ const changeStatus = (card, taskId) => {
   left: 50%;
   position: fixed;
   top: 50%;
-  width: 180px;
+  width: 150px;
   height: 100px;
   background-color: white;
   border-radius: 10px;

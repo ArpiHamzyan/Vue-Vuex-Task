@@ -10,16 +10,16 @@
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue'
-import NewTasks from '@/components/NewTasks.vue'
-import IsProcess from '@/components/IsProcess.vue'
-import Done from '@/components/Done.vue'
+import Header from '@/components/Header/Header.vue'
+import NewTasks from '@/components/Todos/NewTasks.vue'
+import IsProcess from '@/components/Todos/IsProcess.vue'
+import Done from '@/components/Todos/Done.vue'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
 
 const store = useStore()
 
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 </script>
 
 <style scoped>
@@ -36,6 +36,9 @@ const isDarkTheme = computed(() => store.state.isDarkTheme)
 .container {
   padding-top: 250px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  gap: 30px;
+  padding-left: 80px;
+  padding-right: 100px;
 }
 </style>

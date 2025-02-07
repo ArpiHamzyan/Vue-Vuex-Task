@@ -5,6 +5,11 @@ const products = {
   state: {
     list: [],
   },
+  getters: {
+    getProducts(state) {
+      return state.list
+    },
+  },
   mutations: {
     add(state, product) {
       state.list.unshift(product)
@@ -49,31 +54,46 @@ const products = {
 const todos = {
   namespaced: true,
   state: {
-    list: [
+    newtasks: [
       {
         id: 1,
         title: 'Task One',
-        status: 'NewTasks',
       },
+    ],
+    isprocess: [
       {
-        id: 2,
+        id: 1,
         title: 'Task Two',
-        status: 'NewTasks',
+      },
+    ],
+    done: [
+      {
+        id: 1,
+        title: 'Task Three',
       },
     ],
   },
+  getters: {
+    getNewTasks: (state) => state.newtasks,
+    getIsProcess: (state) => state.isprocess,
+    getDone: (state) => state.done,
+  },
   mutations: {
     add(state, todo) {
-      state.list.unshift(todo)
+      state.newtasks.unshift(todo)
     },
-    remove(state, id) {
-      state.list = state.list.filter((todo) => todo.id !== id)
+    remove(state, { id, key }) {
+      state[key] = state[key].filter((todo) => todo.id !== id)
     },
-    moveTodo(state, { status, taskId }) {
-      const task = state.list.find((todo) => todo.id == taskId)
-      if (task) {
-        task.status = status
-      }
+    moveTodo(state, { fromKey, toKey, taskId }) {
+      const taskIndex = state[fromKey].findIndex((todo) => todo.id === taskId)
+      if (taskIndex === -1) return
+
+      const [task] = state[fromKey].splice(taskIndex, 1)
+
+      task.id = state[toKey].length + 1
+
+      state[toKey].unshift(task)
     },
   },
 }
@@ -81,6 +101,11 @@ const todos = {
 export default createStore({
   state: {
     isDarkTheme: false,
+  },
+  getters: {
+    getIsDarkTheme(state) {
+      return state.isDarkTheme
+    },
   },
   mutations: {
     setDarkTheme(state, value) {

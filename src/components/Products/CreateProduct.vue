@@ -48,7 +48,7 @@
         />
       </div>
 
-      <button class="button" type="submit">Add</button>
+      <button :disabled="submitDisabled" class="button" type="submit">Add</button>
     </form>
   </div>
 </template>
@@ -59,13 +59,24 @@ import { ref, computed } from 'vue'
 
 const store = useStore()
 
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 
 const title = ref('')
 const price = ref()
 const category = ref('')
 const description = ref('')
 const image = ref('')
+
+//submit denied
+
+const submitDisabled = computed(
+  () =>
+    title.value.length === 0 ||
+    price.value.length === 0 ||
+    category.value.length === 0 ||
+    description.value.length === 0 ||
+    image.value.length === 0,
+)
 
 const submit = async () => {
   const product = {

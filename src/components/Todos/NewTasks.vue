@@ -3,19 +3,26 @@
     <div class="title">New Tasks</div>
     <div class="todo_body">
       <input v-model="todo" class="todo_input" type="text" placeholder="Add new task" />
-      <img @click="addTodo()" src="../assets/aaymlm710.webp" alt="" />
+      <img @click="addTodo()" :src="plus" alt="" />
     </div>
     <ul>
-      <li v-for="(todo, index) in todos" :key="todo.id">
+      <li v-for="todo in todos" :key="todo.id">
         {{ todo.title }}
         <div class="buttons">
           <div @click="removeTodo(todo.id)" class="delete">Delete</div>
-          <div @click="openModal(index)" class="delete">Move</div>
+          <div @click="openModal(todo.id, $event)" class="delete">Move</div>
         </div>
       </li>
     </ul>
     <div class="modal" v-show="isModalOpen">
-      <Move :taskId="taskId" :cards="['IsProcess', 'Done']" @close="isModalOpen = false" />
+      <Move
+        :taskId="taskId"
+        :fromKey="'newtasks'"
+        :cards="['isprocess', 'done']"
+        :x="positions.x"
+        :y="positions.y"
+        @close="isModalOpen = false"
+      />
     </div>
   </div>
 </template>
@@ -23,13 +30,14 @@
 <script setup>
 import { useStore } from 'vuex'
 import { ref, computed } from 'vue'
-import Move from './Move.vue'
+import Move from '../Modal/Move.vue'
+import plus from '@/assets/aaymlm710.webp'
 
 const store = useStore()
 
 //get tasks
 
-const todos = computed(() => store.state.todos.list.filter((todo) => todo.status === 'NewTasks'))
+const todos = computed(() => store.getters['todos/getNewTasks'])
 
 //add todo
 
@@ -54,17 +62,27 @@ const addTodo = () => {
 //delete todo
 
 const removeTodo = (id) => {
-  store.commit('todos/remove', id)
+  store.commit('todos/remove', { id, key: 'newtasks' })
 }
 
 //open modal
 
 const isModalOpen = ref(false)
 const taskId = ref(0)
+const positions = ref({ x: 0, y: 0 })
 
-const openModal = (index) => {
-  taskId.value = todos.value[index].id
-  isModalOpen.value = !isModalOpen.value
+const openModal = (id, event) => {
+  positions.value = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
+  if (taskId.value == id) {
+    isModalOpen.value = !isModalOpen.value
+  } else {
+    isModalOpen.value = true
+  }
+  taskId.value = id
 }
 </script>
 
@@ -136,8 +154,5 @@ li {
   color: white;
   padding: 10px;
   margin-left: 5px;
-}
-.modal {
-  transform: translate(20%, -30%);
 }
 </style>

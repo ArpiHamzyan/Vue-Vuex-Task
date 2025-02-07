@@ -20,11 +20,11 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 //images
-import dark from '../assets/theme-dark.svg'
-import light from '../assets/theme-light.svg'
+import dark from '@/assets/theme-dark.svg'
+import light from '@/assets/theme-light.svg'
 
 //dark light mode
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 
 onMounted(() => {
   const savedTheme = localStorage.getItem('darkMode')

@@ -7,15 +7,15 @@
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue'
-import CreateProduct from '@/components/CreateProduct.vue'
-import ListProduct from '@/components/ListProduct.vue'
+import Header from '@/components/Header/Header.vue'
+import CreateProduct from '@/components/Products/CreateProduct.vue'
+import ListProduct from '@/components/Products/ListProduct.vue'
 import { useStore } from 'vuex'
 import { computed, onMounted } from 'vue'
 
 const store = useStore()
 
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 
 onMounted(() => {
   store.dispatch('products/get')

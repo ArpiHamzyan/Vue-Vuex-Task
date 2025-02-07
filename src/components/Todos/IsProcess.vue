@@ -1,17 +1,24 @@
 <template>
   <div class="card">
-    <div class="title">Done</div>
+    <div class="title">Is Process</div>
     <ul>
       <li v-for="todo in todos" :key="todo.id">
         {{ todo.title }}
         <div class="buttons">
           <div @click="removeTodo(todo.id)" class="delete">Delete</div>
-          <div @click="openModal(index)" class="delete">Move</div>
+          <div @click="openModal(todo.id, $event)" class="delete">Move</div>
         </div>
       </li>
     </ul>
     <div class="modal" v-show="isModalOpen">
-      <Move :taskId="taskId" :cards="['NewTasks', 'Done']" @close="isModalOpen = false" />
+      <Move
+        :taskId="taskId"
+        :fromKey="'isprocess'"
+        :cards="['newtasks', 'done']"
+        :x="positions.x"
+        :y="positions.y"
+        @close="isModalOpen = false"
+      />
     </div>
   </div>
 </template>
@@ -19,25 +26,37 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
+import Move from '../Modal/Move.vue'
 
 const store = useStore()
 
-const todos = computed(() => store.state.todos.list.filter((todo) => todo.status === 'Done'))
+const todos = computed(() => store.getters['todos/getIsProcess'])
 
 //delete todo
 
 const removeTodo = (id) => {
-  store.commit('todos/remove', id)
+  store.commit('todos/remove', { id, key: 'isprocess' })
 }
 
 //open modal
 
 const isModalOpen = ref(false)
 const taskId = ref(0)
+const positions = ref({ x: 0, y: 0 })
 
-const openModal = (index) => {
-  taskId.value = todos.value[index].id
-  isModalOpen.value = !isModalOpen.value
+const openModal = (id, event) => {
+  positions.value = {
+    x: event.clientX,
+    y: event.clientY,
+  }
+
+  if (taskId.value == id) {
+    isModalOpen.value = !isModalOpen.value
+  } else {
+    isModalOpen.value = true
+  }
+
+  taskId.value = id
 }
 </script>
 

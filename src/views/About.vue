@@ -6,13 +6,13 @@
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue'
+import Header from '@/components/Header/Header.vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 
-const isDarkTheme = computed(() => store.state.isDarkTheme)
+const isDarkTheme = computed(() => store.getters.getIsDarkTheme)
 </script>
 
 <style scoped>
